@@ -1,0 +1,33 @@
+sudo: required
+language: generic
+services:
+  - docker
+before_install:
+  - docker build -t mutil-docker-app -f ./client/Dockerfile-test ./client
+script:
+  - docker run -e CI=true mutil-docker-app npm run test
+
+after_success:
+  - docker build -t multi-client ./client
+  - docker build -t multi-nginx ./nginx
+  - docker build -t multi-server ./server
+  - docker build -t multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$pwd" | docker login -u "$usr" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push multi-client
+  - docker push multi-nginx
+  - docker push multi-server
+  - docker push multi-worker
+
+#deploy:
+#  provider: elasticbeanstalk
+#  access_key_id: $user
+#  secret_access_key: $psw
+#  region: "ap-southeast-2"
+#  app: 'docker'
+#  env: 'docker-env'
+#  bucket_name: 'elasticbeanstalk-ap-southeast-2-798521421267'
+#  bucket_path: 'docker'
+#  on:
+#    branch: master
