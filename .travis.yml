@@ -8,17 +8,17 @@ script:
   - docker run -e CI=true mutil-docker-app npm run test
 
 after_success:
-  - docker build -t multi-client ./client
-  - docker build -t multi-nginx ./nginx
-  - docker build -t multi-server ./server
-  - docker build -t multi-worker ./worker
+  - docker build -t sren16/multi-client ./client
+  - docker build -t sren16/multi-nginx ./nginx
+  - docker build -t sren16/multi-server ./server
+  - docker build -t sren16/multi-worker ./worker
   # Log in to the docker CLI
   - echo "$pwd" | docker login -u "$usr" --password-stdin
   # Take those images and push them to docker hub
-  - docker push sren16/multi-client
-  - docker push sren16/multi-nginx
-  - docker push sren16/multi-server
-  - docker push sren16/multi-worker
+  - docker image push sren16/multi-client
+  - docker image push sren16/multi-nginx
+  - docker image push sren16/multi-server
+  - docker image push sren16/multi-worker
 
 #deploy:
 #  provider: elasticbeanstalk
